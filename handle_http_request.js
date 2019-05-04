@@ -1,3 +1,5 @@
+const {proxyOpenRockoon, proxyHabsim} = require('./proxies');
+
 /**
  * Routes an HTTP request to the proper handler
  *
@@ -16,7 +18,8 @@ function handleHTTPRequest(request, response) {
     const requestQuery = new URL(request.url, 'https://prediction-proxy.stanfordssi.org/');
 
     const action = {
-        '/': rootHandler
+        '/': rootHandler,
+        '/spaceshot/rocket': proxyOpenRockoon
     }[requestQuery.pathname];
 
     if (!action) {
@@ -24,7 +27,7 @@ function handleHTTPRequest(request, response) {
         response.end();
     }
 
-    action(request, response);
+    action(request, response, requestQuery);
 }
 
 /**
