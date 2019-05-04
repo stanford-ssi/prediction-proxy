@@ -19,7 +19,8 @@ function handleHTTPRequest(request, response) {
 
     const action = {
         '/': rootHandler,
-        '/spaceshot/rocket': proxyOpenRockoon
+        '/spaceshot/rocket': proxyOpenRockoon,
+        '/spaceshot/platform': proxyHabsim,
     }[requestQuery.pathname];
 
     if (!action) {
