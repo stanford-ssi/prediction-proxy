@@ -1,4 +1,6 @@
 const axios = require('axios');
+const zlib = require('zlib');
+const { promisify } = require('util');
 const LRU = require('lru-cache');
 
 const CACHE_SIZE = 200;
@@ -33,8 +35,19 @@ async function proxyOpenRockoon(request, response, requestQuery) {
     }
 
     const result = await resultPromise;
+    let responseText = typeof result.data === 'string' ? result.data : JSON.stringify(result.data);
+    const acceptEncoding = request.headers['accept-encoding'] || '';
+
+    if (acceptEncoding.match(/\bdeflate\b/)) {
+        response.setHeader('content-encoding', 'deflate');
+        responseText = await promisify(zlib.deflate)(responseText);
+    } else if (acceptEncoding.match(/\bgzip\b/)) {
+        response.setHeader('content-encoding', 'gzip');
+        responseText = await promisify(zlib.gzip)(responseText);
+    }
+
     response.writeHead(result.status);
-    response.end(typeof result.data === 'string' ? result.data : JSON.stringify(result.data));
+    response.end(responseText);
 }
 
 function proxyHabsim(request, response) {
