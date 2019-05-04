@@ -1,0 +1,7 @@
+{
+  "name": "prediction-proxy",
+  "version": "1.0.0",
+  "description": "Proxies requests to reduce load on openrockoon and habsim servers",
+  "main": "main.js",
+  "license": "MIT"
+}
