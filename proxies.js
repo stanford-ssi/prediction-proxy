@@ -93,6 +93,7 @@ async function genericProxy({ request, response, cache, cacheKey, url}) {
         responseText = await promisify(zlib.gzip)(responseText);
     }
 
+    response.setHeader('Content-Type', 'application/json');
     response.writeHead(result.status);
     response.end(responseText);
 }

@@ -23,7 +23,7 @@ function handleHTTPRequest(request, response) {
         '/spaceshot/platform': proxyHabsim,
     }[requestQuery.pathname];
 
-    if (!action) {
+    if (!action || typeof action !== 'function') {
         response.writeHead(404);
         response.end();
     }
