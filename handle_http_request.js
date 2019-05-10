@@ -26,6 +26,7 @@ function handleHTTPRequest(request, response) {
     if (!action || typeof action !== 'function') {
         response.writeHead(404);
         response.end();
+        return;
     }
 
     action(request, response, requestQuery);
