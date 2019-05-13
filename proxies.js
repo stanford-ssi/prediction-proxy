@@ -6,12 +6,17 @@ const LRU = require('lru-cache');
 const CACHE_SIZE = 200;
 const OPENROCKOON_URL = 'https://openrockoon.stanfordssi.org/predict';
 const HABSIM_URL = 'https://predict.stanfordssi.org/spaceshot';
+const CUSF_URL = 'https://o8k75l22rd.execute-api.us-west-2.amazonaws.com/production/cusfPredictor';
 
 const openRockoonCache = new LRU({
     max: CACHE_SIZE
 });
 
 const habsimCache = new LRU({
+    max: CACHE_SIZE
+});
+
+const cusfCache = new LRU({
     max: CACHE_SIZE
 });
 
@@ -52,6 +57,27 @@ async function proxyHabsim(request, response, requestQuery) {
         request,
         response,
         cache: habsimCache,
+        cacheKey,
+        url
+    });
+}
+
+/**
+ * Proxies requests to CUSF
+ *
+ * @param request
+ * @param response
+ * @param requestQuery
+ * @return {Promise<void>}
+ */
+async function proxyCUSF(request, response, requestQuery) {
+    const cacheKey = requestQuery.search;
+    const url = CUSF_URL + requestQuery.search;
+
+    await genericProxy({
+        request,
+        response,
+        cache: cusfCache,
         cacheKey,
         url
     });
@@ -100,5 +126,6 @@ async function genericProxy({ request, response, cache, cacheKey, url}) {
 
 module.exports = {
     proxyOpenRockoon,
-    proxyHabsim
+    proxyHabsim,
+    proxyCUSF
 };

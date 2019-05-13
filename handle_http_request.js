@@ -1,4 +1,4 @@
-const {proxyOpenRockoon, proxyHabsim} = require('./proxies');
+const {proxyOpenRockoon, proxyHabsim, proxyCUSF} = require('./proxies');
 
 /**
  * Routes an HTTP request to the proper handler
@@ -19,6 +19,7 @@ function handleHTTPRequest(request, response) {
 
     const action = {
         '/': rootHandler,
+        '/cusf': proxyCUSF,
         '/spaceshot/rocket': proxyOpenRockoon,
         '/spaceshot/platform': proxyHabsim,
     }[requestQuery.pathname];
